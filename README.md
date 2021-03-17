@@ -70,14 +70,14 @@ CopyServicePolicies
 
 NodeServicePolicies
 * onAddAspect
-* onCreateAssociation [1]
-* onCreateChildAssociation [1]
+* onCreateAssociation
+* onCreateChildAssociation
 * onCreateNode
-* onDeleteAssociation [1]
-* onDeleteChildAssociation [1]
+* onDeleteAssociation
+* onDeleteChildAssociation
 * onDeleteNode
 * onMoveNode
-* onRemoveAspect [2]
+* onRemoveAspect
 * onSetNodeType
 * onUpdateNode
 * onUpdateProperties
