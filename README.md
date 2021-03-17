@@ -58,3 +58,56 @@ Run the application
 ```
 $ java -jar target/alfresco-java-sdk-behaviours-5.0.0-SNAPSHOT.jar
 ```
+
+## Supported behaviour policies
+
+ContentServicePolicies
+* onContentPropertyUpdate
+* onContentUpdate
+
+CopyServicePolicies
+* onCopyNode (listening to `cm:copiedfrom` aspect addition)
+
+NodeServicePolicies
+* onAddAspect
+* onCreateAssociation [1]
+* onCreateChildAssociation [1]
+* onCreateNode
+* onDeleteAssociation [1]
+* onDeleteChildAssociation [1]
+* onDeleteNode
+* onMoveNode
+* onRemoveAspect [2]
+* onSetNodeType
+* onUpdateNode
+* onUpdateProperties
+
+VersionServicesPolicies
+* afterCreateVersion
+* onCreateVersion
+
+## Unsupported behaviour policies
+
+ContentServicePolicies
+* onContentRead
+
+CopyServicePolicies
+* beforeCopy
+* onCopyComplete
+
+NodeServicePolicies
+* beforeAddAspect
+* beforeArchiveNode
+* beforeCreateNode
+* beforeCreateStore
+* beforeDeleteAssociation
+* beforeDeleteChildAssociation
+* beforeDeleteNode
+* beforeMoveNode
+* beforeRemoveAspect
+* beforeSetNodeType
+* beforeUpdateNode
+
+VersionServicesPolicies
+* beforeCreateVersion
+* calculateVersionLabel
