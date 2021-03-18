@@ -27,10 +27,14 @@ public class AspectFilter extends AbstractEventFilter {
     @Override
     public boolean test(RepoEvent<DataAttributes<Resource>> event) {
         LOGGER.debug("Checking filter for aspect {} and event {}", acceptedAspect, event);
-        final NodeResource nodeResourceBefore = (NodeResource) event.getData().getResourceBefore();
-        final NodeResource nodeResource = (NodeResource) event.getData().getResource();
-        final boolean aspectExistedBefore = (nodeResourceBefore != null && nodeResourceBefore.getAspectNames().contains(acceptedAspect));
-        final boolean aspectExists = (nodeResource != null && nodeResource.getAspectNames().contains(acceptedAspect));
-        return isNodeEvent(event) && aspectExists && !aspectExistedBefore;
+        if (isNodeEvent(event)) {
+            final NodeResource nodeResourceBefore = (NodeResource) event.getData().getResourceBefore();
+            final NodeResource nodeResource = (NodeResource) event.getData().getResource();
+            final boolean aspectExistedBefore = (nodeResourceBefore != null && nodeResourceBefore.getAspectNames().contains(acceptedAspect));
+            final boolean aspectExists = (nodeResource != null && nodeResource.getAspectNames().contains(acceptedAspect));
+            return aspectExists && !aspectExistedBefore;
+        } else {
+            return false;
+        }
     }
 }

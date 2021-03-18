@@ -28,6 +28,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.IntegrationFlows;
+import org.springframework.messaging.MessageHandlingException;
 
 @SpringBootApplication
 public class SampleBehaviourPolicyMappingApplication {
@@ -40,26 +41,30 @@ public class SampleBehaviourPolicyMappingApplication {
 
     @Bean
     public IntegrationFlow logError() {
-        return IntegrationFlows.from(EventChannels.ERROR).handle(t -> LOGGER.info("Error: {}", t.getPayload().toString())).get();
+        return IntegrationFlows.from(EventChannels.ERROR).handle(t -> {
+            LOGGER.info("Error: {}", t.getPayload().toString());
+            MessageHandlingException exception = (MessageHandlingException) t.getPayload();
+            exception.printStackTrace();
+        }).get();
     }
 
     @Bean
     public IntegrationFlow logContentBehaviourPolicy() {
         return IntegrationFlows.from(EventChannels.MAIN)
-            .filter(IntegrationEventFilter.of(EventTypeFilter.NODE_CREATED
-                .and(ContentFilter.get())
-                .or(ContentChangedFilter.get())))
-            .handle(t -> LOGGER.info("onContentPropertyUpdated / onContentUpdate! - Event: {}", t.getPayload().toString()))
-            .get();
+                .filter(IntegrationEventFilter.of(EventTypeFilter.NODE_CREATED
+                        .and(ContentFilter.get())
+                        .or(ContentChangedFilter.get())))
+                .handle(t -> LOGGER.info("onContentPropertyUpdated / onContentUpdate! - Event: {}", t.getPayload().toString()))
+                .get();
     }
 
     @Bean
     public IntegrationFlow logCopyPolicy() {
         return IntegrationFlows.from(EventChannels.MAIN)
-            .filter(IntegrationEventFilter.of(EventTypeFilter.NODE_CREATED
-                .and(AspectFilter.of("cm:copiedfrom"))))
-            .handle(t -> LOGGER.info("onCopyNode! - Event: {}", t.getPayload().toString()))
-            .get();
+                .filter(IntegrationEventFilter.of(EventTypeFilter.NODE_CREATED
+                        .and(AspectFilter.of("cm:copiedfrom"))))
+                .handle(t -> LOGGER.info("onCopyNode! - Event: {}", t.getPayload().toString()))
+                .get();
     }
 
     /**
@@ -71,34 +76,34 @@ public class SampleBehaviourPolicyMappingApplication {
                 .filter(IntegrationEventFilter.of(EventTypeFilter.NODE_CREATED
                         .and(AspectFilter.of("cm:summarizable"))
                         .or(AspectAddedFilter.of("cm:summarizable"))))
-            .handle(t -> LOGGER.info("onAddAspect! - Event: {}", t.getPayload().toString()))
-            .get();
+                .handle(t -> LOGGER.info("onAddAspect! - Event: {}", t.getPayload().toString()))
+                .get();
     }
 
     // FIXME Not working
     @Bean
     public IntegrationFlow logCreateAssociation() {
         return IntegrationFlows.from(EventChannels.MAIN)
-            .filter(IntegrationEventFilter.of(EventTypeFilter.PEER_ASSOC_CREATED))
-            .handle(t -> LOGGER.info("onCreateAssociation! - Event: {}", t.getPayload().toString()))
-            .get();
+                .filter(IntegrationEventFilter.of(EventTypeFilter.PEER_ASSOC_CREATED))
+                .handle(t -> LOGGER.info("onCreateAssociation! - Event: {}", t.getPayload().toString()))
+                .get();
     }
 
     // FIXME Not working
     @Bean
     public IntegrationFlow logCreateChildAssociation() {
         return IntegrationFlows.from(EventChannels.MAIN)
-            .filter(IntegrationEventFilter.of(EventTypeFilter.CHILD_ASSOC_CREATED))
-            .handle(t -> LOGGER.info("onCreateChildAssociation! - Event: {}", t.getPayload().toString()))
-            .get();
+                .filter(IntegrationEventFilter.of(EventTypeFilter.CHILD_ASSOC_CREATED))
+                .handle(t -> LOGGER.info("onCreateChildAssociation! - Event: {}", t.getPayload().toString()))
+                .get();
     }
 
     @Bean
     public IntegrationFlow logCreateNode() {
         return IntegrationFlows.from(EventChannels.MAIN)
-            .filter(IntegrationEventFilter.of(EventTypeFilter.NODE_CREATED))
-            .handle(t -> LOGGER.info("onCreateNode! - Event: {}", t.getPayload().toString()))
-            .get();
+                .filter(IntegrationEventFilter.of(EventTypeFilter.NODE_CREATED))
+                .handle(t -> LOGGER.info("onCreateNode! - Event: {}", t.getPayload().toString()))
+                .get();
     }
 
     // FIXME Not working
@@ -183,7 +188,7 @@ public class SampleBehaviourPolicyMappingApplication {
     public IntegrationFlow logAfterCreateVersion() {
         return IntegrationFlows.from(EventChannels.MAIN)
                 .filter(IntegrationEventFilter.of(EventTypeFilter.NODE_UPDATED
-                .and(PropertyChangedFilter.of("cm:versionLabel"))))
+                        .and(PropertyChangedFilter.of("cm:versionLabel"))))
                 .handle(t -> LOGGER.info("afterCreateVersion! - Event: {}", t.getPayload().toString()))
                 .get();
     }
