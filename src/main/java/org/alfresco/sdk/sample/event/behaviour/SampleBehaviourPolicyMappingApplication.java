@@ -39,6 +39,11 @@ public class SampleBehaviourPolicyMappingApplication {
     }
 
     @Bean
+    public IntegrationFlow logError() {
+        return IntegrationFlows.from(EventChannels.ERROR).handle(t -> LOGGER.info("Error: {}", t.getPayload().toString())).get();
+    }
+
+    @Bean
     public IntegrationFlow logContentBehaviourPolicy() {
         return IntegrationFlows.from(EventChannels.MAIN)
             .filter(IntegrationEventFilter.of(EventTypeFilter.NODE_CREATED
